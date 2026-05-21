@@ -1,0 +1,5 @@
+node_modules/
+backend/database.db
+backend/recibos/
+.env
+implementation_plan.md
