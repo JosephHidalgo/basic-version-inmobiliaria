@@ -324,6 +324,44 @@ tr:hover {
 .cuota-vencido { background: #fef2f2; }
 .cuota-parcial { background: #fffbeb; }
 
+.badge-efectivo { background: var(--success-light); color: var(--success); }
+.badge-transferencia { background: var(--primary-light); color: var(--primary); }
+.badge-deposito { background: var(--warning-light); color: var(--warning); }
+
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  background: var(--gray-100);
+  border-radius: var(--radius);
+  padding: 4px;
+}
+
+.tab-btn {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tab-btn:hover {
+  color: var(--gray-900);
+}
+
+.tab-btn.active {
+  background: white;
+  color: var(--gray-900);
+  box-shadow: var(--shadow);
+}
+
+.badge-warning { background: var(--warning-light); color: var(--warning); }
+
 /* Buttons */
 .btn {
   display: inline-flex;

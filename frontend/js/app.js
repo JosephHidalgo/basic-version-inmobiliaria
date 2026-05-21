@@ -3,6 +3,7 @@ const routes = {
   'proyectos': { title: 'Proyectos', render: renderProyectos },
   'lotes': { title: 'Lotes', render: renderLotes },
   'ventas': { title: 'Ventas', render: renderVentas },
+  'cobros': { title: 'Cobros', render: renderCobros },
   'clientes': { title: 'Clientes', render: renderClientes },
   'configuracion': { title: 'Configuración', render: renderConfiguracion },
 };

@@ -218,7 +218,10 @@ async function showVentaDetail(id) {
   container.innerHTML = '<div class="loading">Cargando...</div>';
 
   try {
-    const venta = await apiGet(`/ventas/${id}`);
+    const [venta, pagos] = await Promise.all([
+      apiGet(`/ventas/${id}`),
+      apiGet(`/pagos?venta_id=${id}`),
+    ]);
 
     container.innerHTML = `
       <button class="back-btn" onclick="navigateTo('#/ventas')">
@@ -325,13 +328,54 @@ async function showVentaDetail(id) {
             </table>
           </div>
         </div>
-      ` : venta.tipo_pago === 'contado' ? `
-        <div class="card" style="margin-top: 24px;">
-          <div class="empty-state">
-            <p>Venta al contado — Pago único registrado</p>
-          </div>
-        </div>
       ` : ''}
+
+      <div class="card" style="margin-top: 24px;">
+        <div class="card-header">
+          <h3 class="card-title">Historial de Pagos</h3>
+        </div>
+        ${!pagos || pagos.length === 0 ? `
+          <div class="empty-state">
+            <p>No hay pagos registrados para esta venta</p>
+          </div>
+        ` : `
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Recibo</th>
+                  <th>Cuota N°</th>
+                  <th>Monto</th>
+                  <th>Mora</th>
+                  <th>Método</th>
+                  <th>Fecha</th>
+                  <th>Recibo</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${pagos.map(p => `
+                  <tr>
+                    <td><strong>${p.numero_recibo || '-'}</strong></td>
+                    <td>${p.numero_cuota || '-'}</td>
+                    <td>S/ ${(p.monto_pagado || 0).toFixed(2)}</td>
+                    <td>S/ ${(p.mora_cobrada || 0).toFixed(2)}</td>
+                    <td><span class="badge badge-${p.metodo_pago || 'efectivo'}">${p.metodo_pago || 'efectivo'}</span></td>
+                    <td>${p.fecha_pago || '-'}</td>
+                    <td>
+                      <button class="btn btn-outline btn-sm" onclick="downloadRecibo(${p.id})">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        PDF
+                      </button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `}
+      </div>
     `;
   } catch (err) {
     container.innerHTML = `<div class="alert alert-error">Error: ${err.message}</div>`;
