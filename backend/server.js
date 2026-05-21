@@ -11,6 +11,7 @@ const clientesRoutes = require('./routes/clientes');
 const ventasRoutes = require('./routes/ventas');
 const cuotasRoutes = require('./routes/cuotas');
 const pagosRoutes = require('./routes/pagos');
+const reportesRoutes = require('./routes/reportes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,6 +28,7 @@ app.use('/api/clientes', authenticateToken, clientesRoutes);
 app.use('/api/ventas', authenticateToken, ventasRoutes);
 app.use('/api/cuotas', authenticateToken, cuotasRoutes);
 app.use('/api/pagos', authenticateToken, pagosRoutes);
+app.use('/api/reportes', authenticateToken, reportesRoutes);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));

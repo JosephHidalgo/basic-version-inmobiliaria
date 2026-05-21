@@ -4,6 +4,7 @@ const routes = {
   'lotes': { title: 'Lotes', render: renderLotes },
   'ventas': { title: 'Ventas', render: renderVentas },
   'cobros': { title: 'Cobros', render: renderCobros },
+  'reportes': { title: 'Reportes', render: renderReportes },
   'clientes': { title: 'Clientes', render: renderClientes },
   'configuracion': { title: 'Configuración', render: renderConfiguracion },
 };

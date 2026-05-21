@@ -361,6 +361,7 @@ tr:hover {
 }
 
 .badge-warning { background: var(--warning-light); color: var(--warning); }
+.badge-danger { background: var(--danger-light); color: var(--danger); }
 
 /* Buttons */
 .btn {
