@@ -313,6 +313,16 @@ tr:hover {
 .badge-reservado { background: var(--warning-light); color: var(--warning); }
 .badge-activo { background: var(--success-light); color: var(--success); }
 .badge-inactivo { background: var(--gray-200); color: var(--gray-600); }
+.badge-contado { background: var(--success-light); color: var(--success); }
+.badge-credito { background: var(--warning-light); color: var(--warning); }
+.badge-pendiente { background: var(--gray-200); color: var(--gray-600); }
+.badge-pagado { background: var(--success-light); color: var(--success); }
+.badge-vencido { background: var(--danger-light); color: var(--danger); }
+.badge-parcial { background: var(--warning-light); color: var(--warning); }
+
+.cuota-pagado { background: #f0fdf4; }
+.cuota-vencido { background: #fef2f2; }
+.cuota-parcial { background: #fffbeb; }
 
 /* Buttons */
 .btn {
