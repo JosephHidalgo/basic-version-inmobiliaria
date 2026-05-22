@@ -304,21 +304,19 @@ async function showVentaDetail(id) {
                   <th>Fecha Vencimiento</th>
                   <th>Monto</th>
                   <th>Pagado</th>
-                  <th>Mora</th>
                   <th>Saldo</th>
                   <th>Estado</th>
                 </tr>
               </thead>
               <tbody>
                 ${venta.cuotas.map(c => {
-                  const saldo = c.monto + c.mora - c.monto_pagado;
+                  const saldo = c.monto - c.monto_pagado;
                   return `
                     <tr class="cuota-${c.estado}">
                       <td>${c.numero_cuota}</td>
                       <td>${c.fecha_vencimiento}</td>
                       <td>S/ ${(c.monto || 0).toFixed(2)}</td>
                       <td>S/ ${(c.monto_pagado || 0).toFixed(2)}</td>
-                      <td>S/ ${(c.mora || 0).toFixed(2)}</td>
                       <td>S/ ${(saldo > 0 ? saldo : 0).toFixed(2)}</td>
                       <td><span class="badge badge-${c.estado}">${c.estado}</span></td>
                     </tr>

@@ -40,7 +40,7 @@ function create(req, res) {
   const numero_recibo = generateReciboNumber(db);
   const moraFinal = mora_cobrada !== undefined ? parseFloat(mora_cobrada) : (cuota.mora || 0);
   const monto = parseFloat(monto_pagado);
-  const principalPagado = Math.max(0, monto - moraFinal);
+  const principalPagado = monto;
 
   const result = db.prepare(`
     INSERT INTO pagos (cuota_id, monto_pagado, mora_cobrada, fecha_pago, metodo_pago, numero_recibo, observaciones)
@@ -64,6 +64,10 @@ function create(req, res) {
 
   const pago = db.prepare('SELECT * FROM pagos WHERE id = ?').get(result.lastInsertRowid);
 
+  const totalPagadoVenta = db.prepare(
+    'SELECT COALESCE(SUM(monto_pagado), 0) as total FROM cuotas WHERE venta_id = ?'
+  ).get(cuota.venta_id).total;
+
   const venta = { num_cuotas: cuota.num_cuotas, tipo_pago: cuota.tipo_pago, precio_acordado: cuota.precio_acordado, cuota_inicial: cuota.cuota_inicial };
   const lote = { codigo: cuota.lote_codigo, nombre: cuota.lote_nombre, area_m2: cuota.area_m2 };
   const proyecto = { nombre: cuota.proyecto_nombre, ubicacion: cuota.proyecto_ubicacion };
@@ -72,7 +76,7 @@ function create(req, res) {
 
   let reciboArchivo = null;
   try {
-    reciboArchivo = generarRecibo(pago, cuotaData, venta, lote, proyecto, cliente);
+    reciboArchivo = generarRecibo(pago, cuotaData, venta, lote, proyecto, cliente, totalPagadoVenta);
   } catch (err) {
     console.error('Error generando PDF:', err.message);
   }

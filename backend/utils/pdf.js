@@ -2,7 +2,7 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const path = require('path');
 
-function generarRecibo(pago, cuota, venta, lote, proyecto, cliente) {
+function generarRecibo(pago, cuota, venta, lote, proyecto, cliente, totalPagadoVenta) {
   const doc = new PDFDocument({ margin: 50, size: 'A5' });
   const nombreArchivo = `${pago.numero_recibo}.pdf`;
   const recibosDir = path.join(__dirname, '..', 'recibos');
@@ -48,20 +48,25 @@ function generarRecibo(pago, cuota, venta, lote, proyecto, cliente) {
 
   writeLine('Cuota N°:', `${cuota.numero_cuota} de ${venta.num_cuotas}`);
   writeLine('Monto cuota:', `S/ ${(cuota.monto || 0).toFixed(2)}`);
+  writeLine('Abono hoy:', `S/ ${(pago.monto_pagado || 0).toFixed(2)}`);
+  const saldoCuota = (cuota.monto || 0) - (cuota.monto_pagado || 0);
+  if (saldoCuota > 0) {
+    writeLine('Saldo cuota:', `S/ ${saldoCuota.toFixed(2)}`);
+  }
+  const totalCobrado = (pago.monto_pagado || 0) + (pago.mora_cobrada || 0);
   if (pago.mora_cobrada > 0) {
     writeLine('Mora cobrada:', `S/ ${(pago.mora_cobrada || 0).toFixed(2)}`);
   }
   doc.font('Helvetica-Bold').fontSize(11);
-  writeLine('Total pagado:', `S/ ${(pago.monto_pagado || 0).toFixed(2)}`);
+  writeLine('Total cobrado:', `S/ ${totalCobrado.toFixed(2)}`);
   doc.font('Helvetica').fontSize(10);
   writeLine('Método:', pago.metodo_pago || 'efectivo');
 
   let saldoPendiente = 0;
   if (venta.tipo_pago === 'credito') {
-    const totalCuotas = venta.num_cuotas || 0;
     const totalVenta = (venta.precio_acordado || 0) - (venta.cuota_inicial || 0);
-    const totalPagado = (cuota.monto_pagado || 0);
-    saldoPendiente = Math.max(0, totalVenta - totalPagado);
+    const pagado = totalPagadoVenta !== undefined ? totalPagadoVenta : (cuota.monto_pagado || 0);
+    saldoPendiente = Math.max(0, totalVenta - pagado);
   }
   writeLine('Saldo pendiente:', `S/ ${saldoPendiente.toFixed(2)}`);
 

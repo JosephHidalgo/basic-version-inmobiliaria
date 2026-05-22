@@ -73,7 +73,7 @@ function renderPendientesHTML(cuotas) {
           </thead>
           <tbody>
             ${cuotas.map(c => {
-              const saldo = (c.monto || 0) + (c.mora || 0) - (c.monto_pagado || 0);
+              const saldo = (c.monto || 0) - (c.monto_pagado || 0);
               return `
                 <tr class="cuota-${c.estado}">
                   <td><strong>${c.cliente_nombre}</strong><br><small>${c.cliente_dni || ''}</small></td>
@@ -165,8 +165,8 @@ async function showPagoForm(cuotaId) {
       return;
     }
 
-    const saldo = (cuota.monto || 0) + (cuota.mora || 0) - (cuota.monto_pagado || 0);
-    const montoSugerido = (cuota.monto || 0) + (cuota.mora || 0);
+    const saldo = Math.max(0, (cuota.monto || 0) - (cuota.monto_pagado || 0));
+    const montoSugerido = saldo;
 
     openModal('Registrar Pago', `
       <form id="pagoForm" onsubmit="savePago(event, ${cuotaId})">

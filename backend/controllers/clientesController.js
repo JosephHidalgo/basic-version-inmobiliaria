@@ -64,7 +64,23 @@ function remove(req, res) {
   const existing = db.prepare('SELECT * FROM clientes WHERE id = ?').get(req.params.id);
   if (!existing) return res.status(404).json({ error: 'Cliente no encontrado.' });
 
-  db.prepare('DELETE FROM clientes WHERE id = ?').run(req.params.id);
+  const removeTransaction = db.transaction((clienteId) => {
+    db.prepare(`
+      DELETE FROM pagos WHERE cuota_id IN (
+        SELECT c.id FROM cuotas c
+        JOIN ventas v ON c.venta_id = v.id
+        WHERE v.cliente_id = ?
+      )
+    `).run(clienteId);
+
+    db.prepare(`
+      DELETE FROM ventas WHERE cliente_id = ?
+    `).run(clienteId);
+
+    db.prepare('DELETE FROM clientes WHERE id = ?').run(clienteId);
+  });
+
+  removeTransaction(req.params.id);
   res.json({ message: 'Cliente eliminado correctamente.' });
 }
 

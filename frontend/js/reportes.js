@@ -278,7 +278,7 @@ async function buscarEstadoCuenta() {
                 </thead>
                 <tbody>
                   ${v.cuotas.map(c => {
-                    const saldo = c.monto + c.mora - c.monto_pagado;
+                    const saldo = c.monto - c.monto_pagado;
                     return `
                       <tr class="cuota-${c.estado}">
                         <td>${c.numero_cuota}</td>
